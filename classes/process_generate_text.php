@@ -90,7 +90,7 @@ class process_generate_text extends abstract_processor {
         $responsebody = $response->getBody();
         $bodyobj = json_decode($responsebody->getContents());
 
-        // Cleanup thinking before returning text if any
+        // Cleanup thinking before returning text if any !
         $thinkclean = preg_replace('/<think>.*?<\/think>/s', '', $bodyobj->choices[0]->message->content);
 
         return [
