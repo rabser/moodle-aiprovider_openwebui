@@ -127,7 +127,7 @@ class provider extends \core_ai\provider {
             if (!$ratelimiter->check_global_rate_limit(
                 component: $component,
                 ratelimit: $this->globalratelimit
-            )) {
+               )) {
                 return [
                     'success' => false,
                     'errorcode' => 429,

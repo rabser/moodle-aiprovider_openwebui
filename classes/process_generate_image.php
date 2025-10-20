@@ -117,7 +117,7 @@ class process_generate_image extends abstract_processor {
 
         return [
             'success' => true,
-            'sourceurl' => $apiurl.$bodyobj[0]->url,
+            'sourceurl' => $apiurl . $bodyobj[0]->url,
         ];
     }
 
@@ -135,13 +135,13 @@ class process_generate_image extends abstract_processor {
     private function url_to_file(int $userid, string $url): \stored_file {
         global $CFG;
 
-	 // Get api key from config.
+        // Get api key from config.
         $apikey = get_config('aiprovider_openwebui', 'apikey');
 
         require_once("{$CFG->libdir}/filelib.php");
 
         $parsedurl = parse_url($url, PHP_URL_PATH); // Parse the URL to get the path.
-        $filename = 'ai_image_'.basename(dirname($parsedurl)); // Get the basename of the path.
+        $filename = 'ai_image_' . basename(dirname($parsedurl)); // Get the basename of the path.
 
         $client = \core\di::get(http_client::class);
 
@@ -151,7 +151,7 @@ class process_generate_image extends abstract_processor {
             'sink' => $tempdst,
             'timeout' => $CFG->repositorygetfiletimeout,
             'headers' => [
-            'Authorization' => 'Bearer '.$apikey,
+            'Authorization' => 'Bearer ' . $apikey,
             ],
         ]);
 

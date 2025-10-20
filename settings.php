@@ -42,7 +42,7 @@ if ($hassiteconfig) {
         '',
     ));
 
-    // Setting to store OpenWebUI apiurl
+    // Setting to store OpenWebUI apiurl.
     $settings->add(new admin_setting_configtext(
         'aiprovider_openwebui/apiurl',
         new lang_string('apiurl', 'aiprovider_openwebui'),
