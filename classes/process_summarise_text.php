@@ -30,7 +30,8 @@ use Psr\Http\Message\UriInterface;
 class process_summarise_text extends process_generate_text {
     #[\Override]
     protected function get_endpoint(): UriInterface {
-        return new Uri(get_config('aiprovider_openwebui', 'apiurl').get_config('aiprovider_openwebui', 'action_summarise_text_endpoint'));
+        return new Uri(get_config('aiprovider_openwebui', 'apiurl') .
+                       get_config('aiprovider_openwebui', 'action_summarise_text_endpoint'));
     }
 
     #[\Override]

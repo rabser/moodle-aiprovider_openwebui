@@ -125,14 +125,11 @@ abstract class abstract_processor extends process_base {
 
         $status = $response->getStatusCode();
         if ($status >= 500 && $status < 600) {
-error_log("ERROR $status ".$response->getReasonPhrase());
             $responsearr['errormessage'] = $response->getReasonPhrase();
         } else {
             $bodyobj = json_decode($response->getBody()->getContents());
             $responsearr['errormessage'] = $bodyobj->detail;
-error_log("ERROR $status ".$bodyobj->detail);
         }
-
         return $responsearr;
     }
 }

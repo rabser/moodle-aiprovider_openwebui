@@ -33,7 +33,8 @@ use Psr\Http\Message\UriInterface;
 class process_generate_text extends abstract_processor {
     #[\Override]
     protected function get_endpoint(): UriInterface {
-        return new Uri(get_config('aiprovider_openwebui', 'apiurl').get_config('aiprovider_openwebui', 'action_generate_text_endpoint'));
+        return new Uri(get_config('aiprovider_openwebui', 'apiurl') .
+                       get_config('aiprovider_openwebui', 'action_generate_text_endpoint'));
     }
 
     #[\Override]
@@ -90,13 +91,13 @@ class process_generate_text extends abstract_processor {
         $bodyobj = json_decode($responsebody->getContents());
 
         // Cleanup thinking before returning text if any
-	$think_clean = preg_replace('/<think>.*?<\/think>/s', '', $bodyobj->choices[0]->message->content);
+        $thinkclean = preg_replace('/<think>.*?<\/think>/s', '', $bodyobj->choices[0]->message->content);
 
         return [
             'success' => true,
             'id' => $bodyobj->id,
             'finishreason' => $bodyobj->choices[0]->finish_reason,
-            'generatedcontent' => ltrim($think_clean),
+            'generatedcontent' => ltrim($thinkclean),
             'prompttokens' => $bodyobj->usage->prompt_tokens,
             'completiontokens' => $bodyobj->usage->completion_tokens,
         ];

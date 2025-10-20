@@ -41,7 +41,8 @@ class process_generate_image extends abstract_processor {
 
     #[\Override]
     protected function get_endpoint(): UriInterface {
-        return new Uri(get_config('aiprovider_openwebui', 'apiurl').get_config('aiprovider_openwebui', 'action_generate_image_endpoint'));
+        return new Uri(get_config('aiprovider_openwebui', 'apiurl') .
+                       get_config('aiprovider_openwebui', 'action_generate_image_endpoint'));
     }
 
     #[\Override]
@@ -149,8 +150,8 @@ class process_generate_image extends abstract_processor {
         $client->get($url, [
             'sink' => $tempdst,
             'timeout' => $CFG->repositorygetfiletimeout,
-	    'headers' => [
-	        'Authorization' => 'Bearer '.$apikey,
+            'headers' => [
+            'Authorization' => 'Bearer '.$apikey,
             ],
         ]);
 
