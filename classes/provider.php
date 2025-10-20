@@ -25,7 +25,7 @@ use Psr\Http\Message\RequestInterface;
  *
  * @package    aiprovider_openwebui
  * @copyright  2025 Sergio Rabellino <sergio.rabellino@unito.it>
- * @this_is_derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
+ * derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider extends \core_ai\provider {
