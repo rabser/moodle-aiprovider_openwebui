@@ -113,12 +113,12 @@ class provider extends \core_ai\provider {
                 component: $component,
                 ratelimit: $this->userratelimit,
                 userid: $action->get_configuration('userid')
-            )) {
-                return [
-                    'success' => false,
-                    'errorcode' => 429,
-                    'errormessage' => 'User rate limit exceeded',
-                ];
+                )) {
+                    return [
+                        'success' => false,
+                        'errorcode' => 429,
+                        'errormessage' => 'User rate limit exceeded',
+                    ];
             }
         }
 
