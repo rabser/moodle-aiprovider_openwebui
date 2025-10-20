@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -52,8 +51,7 @@ class provider extends \core_ai\provider
     /**
      * Class constructor.
      */
-    public function __construct()
-    {
+    public function __construct() {
         // Get api url from config.
         $this->apiurl = get_config('aiprovider_openwebui', 'apiurl');
         // Get api key from config.
@@ -71,8 +69,7 @@ class provider extends \core_ai\provider
      *
      * @return array An array of action class names.
      */
-    public function get_action_list(): array
-    {
+    public function get_action_list(): array {
         return [
             \core_ai\aiactions\generate_text::class,
             \core_ai\aiactions\generate_image::class,
@@ -90,8 +87,7 @@ class provider extends \core_ai\provider
      * @param string $userid The user id.
      * @return string The generated user id.
      */
-    public function generate_userid(string $userid): string
-    {
+    public function generate_userid(string $userid): string {
         global $CFG;
         return hash('sha256', $CFG->siteidentifier . $userid);
     }
@@ -102,15 +98,13 @@ class provider extends \core_ai\provider
      * @param \Psr\Http\Message\RequestInterface $request
      * @return \Psr\Http\Message\RequestInterface
      */
-    public function add_authentication_headers(RequestInterface $request): RequestInterface
-    {
+    public function add_authentication_headers(RequestInterface $request): RequestInterface {
         return $request
             ->withAddedHeader('Authorization', "Bearer {$this->apikey}");
     }
 
     #[\Override]
-    public function is_request_allowed(aiactions\base $action): array|bool
-    {
+    public function is_request_allowed(aiactions\base $action): array|bool {
         $ratelimiter = \core\di::get(rate_limiter::class);
         $component = \core\component::get_component_from_classname(get_class($this));
 
@@ -219,8 +213,7 @@ class provider extends \core_ai\provider
      *
      * @return bool Return true if configured.
      */
-    public function is_provider_configured(): bool
-    {
+    public function is_provider_configured(): bool {
         return !empty($this->apikey);
     }
 }
