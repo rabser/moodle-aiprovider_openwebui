@@ -186,7 +186,7 @@ class provider extends \core_ai\provider
                 $action::get_system_instruction(),
                 PARAM_TEXT
             );
-        } elseif ($actionname === 'generate_image') {
+        } else if ($actionname === 'generate_image') {
             // Add the model setting.
             $settings[] = new \admin_setting_configtext(
                 "aiprovider_openwebui/action_{$actionname}_model",
