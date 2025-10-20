@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -28,7 +29,8 @@ use Psr\Http\Message\RequestInterface;
  * derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class provider extends \core_ai\provider {
+class provider extends \core_ai\provider
+{
     /** @var string The OpenWebUI url. */
     private string $apiurl;
 
@@ -50,7 +52,8 @@ class provider extends \core_ai\provider {
     /**
      * Class constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         // Get api url from config.
         $this->apiurl = get_config('aiprovider_openwebui', 'apiurl');
         // Get api key from config.
@@ -68,7 +71,8 @@ class provider extends \core_ai\provider {
      *
      * @return array An array of action class names.
      */
-    public function get_action_list(): array {
+    public function get_action_list(): array
+    {
         return [
             \core_ai\aiactions\generate_text::class,
             \core_ai\aiactions\generate_image::class,
@@ -86,7 +90,8 @@ class provider extends \core_ai\provider {
      * @param string $userid The user id.
      * @return string The generated user id.
      */
-    public function generate_userid(string $userid): string {
+    public function generate_userid(string $userid): string
+    {
         global $CFG;
         return hash('sha256', $CFG->siteidentifier . $userid);
     }
@@ -97,23 +102,27 @@ class provider extends \core_ai\provider {
      * @param \Psr\Http\Message\RequestInterface $request
      * @return \Psr\Http\Message\RequestInterface
      */
-    public function add_authentication_headers(RequestInterface $request): RequestInterface {
+    public function add_authentication_headers(RequestInterface $request): RequestInterface
+    {
         return $request
             ->withAddedHeader('Authorization', "Bearer {$this->apikey}");
     }
 
     #[\Override]
-    public function is_request_allowed(aiactions\base $action): array|bool {
+    public function is_request_allowed(aiactions\base $action): array|bool
+    {
         $ratelimiter = \core\di::get(rate_limiter::class);
         $component = \core\component::get_component_from_classname(get_class($this));
 
         // Check the user rate limit.
         if ($this->enableuserratelimit) {
-            if (!$ratelimiter->check_user_rate_limit(
-                component: $component,
-                ratelimit: $this->userratelimit,
-                userid: $action->get_configuration('userid')
-                )) {
+            if (
+                !$ratelimiter->check_user_rate_limit(
+                    component: $component,
+                    ratelimit: $this->userratelimit,
+                    userid: $action->get_configuration('userid')
+                )
+            ) {
                     return [
                         'success' => false,
                         'errorcode' => 429,
@@ -124,10 +133,12 @@ class provider extends \core_ai\provider {
 
         // Check the global rate limit.
         if ($this->enableglobalratelimit) {
-            if (!$ratelimiter->check_global_rate_limit(
-                component: $component,
-                ratelimit: $this->globalratelimit
-               )) {
+            if (
+                !$ratelimiter->check_global_rate_limit(
+                    component: $component,
+                    ratelimit: $this->globalratelimit
+                )
+            ) {
                 return [
                     'success' => false,
                     'errorcode' => 429,
@@ -181,7 +192,7 @@ class provider extends \core_ai\provider {
                 $action::get_system_instruction(),
                 PARAM_TEXT
             );
-        } else if ($actionname === 'generate_image') {
+        } elseif ($actionname === 'generate_image') {
             // Add the model setting.
             $settings[] = new \admin_setting_configtext(
                 "aiprovider_openwebui/action_{$actionname}_model",
@@ -208,7 +219,8 @@ class provider extends \core_ai\provider {
      *
      * @return bool Return true if configured.
      */
-    public function is_provider_configured(): bool {
+    public function is_provider_configured(): bool
+    {
         return !empty($this->apikey);
     }
 }
