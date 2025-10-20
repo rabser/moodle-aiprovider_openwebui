@@ -29,4 +29,3 @@ We tested successully the following models:
 ## Open WebUI requirements
 For Open WebUI requirements, follow [Open WebUI Requirements](https://docs.openwebui.com/getting-started/).
 At time of writing, our installation of Open WebUI runs on a single OpenStack VM, connected to two GraceHopper nodes working in bare/metal provisioned through a slurm context.
-# moodle-aiprovider_openwebui
