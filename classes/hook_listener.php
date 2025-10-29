@@ -29,7 +29,6 @@ use core_ai\hook\after_ai_provider_form_hook;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class hook_listener {
-
     /**
      * Hook listener for the OpenWebUI instance setup form.
      *
@@ -42,7 +41,7 @@ class hook_listener {
 
         $mform = $hook->mform;
 
-        // Setting to store OpenWebUI url api
+        // Setting to store OpenWebUI url api.
         $mform->addElement(
             'text',
             'apiurl',
@@ -62,7 +61,6 @@ class hook_listener {
         );
         $mform->addHelpButton('apikey', 'apikey', 'aiprovider_openwebui');
         $mform->addRule('apikey', get_string('required'), 'required', null, 'client');
-
     }
 
     /**

@@ -25,5 +25,4 @@ namespace aiprovider_openwebui;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class process_summarise_text extends process_generate_text {
-
 }
