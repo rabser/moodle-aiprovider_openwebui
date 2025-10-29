@@ -14,18 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace aiprovider_openwebui;
+
 /**
- * Version information for aiprovider_openwebui.
+ * Class process text explanation.
  *
  * @package    aiprovider_openwebui
  * @copyright  2025 Sergio Rabellino <sergio.rabellino@unito.it>
- * derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
+ * derived_from 2024 David Woloszyn <david.woloszyn@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class process_explain_text extends process_generate_text {
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->component = 'aiprovider_openwebui';
-$plugin->version = 2025102900;
-$plugin->requires = 2025040800;
-$plugin->maturity = MATURITY_STABLE;
+}

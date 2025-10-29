@@ -14,18 +14,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace aiprovider_openwebui\aimodel;
+
 /**
- * Version information for aiprovider_openwebui.
+ * OpenWebUI base AI model interface.
  *
  * @package    aiprovider_openwebui
  * @copyright  2025 Sergio Rabellino <sergio.rabellino@unito.it>
- * derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
+ * derived_from  2025 Huong Nguyen <huongnv13@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+interface openwebui_base {
 
-defined('MOODLE_INTERNAL') || die();
+    /** @var int MODEL_TYPE_TEXT Text model type. */
+    public const MODEL_TYPE_TEXT = 1;
+    /** @var int MODEL_TYPE_IMAGE Image model type. */
+    public const MODEL_TYPE_IMAGE = 2;
 
-$plugin->component = 'aiprovider_openwebui';
-$plugin->version = 2025102900;
-$plugin->requires = 2025040800;
-$plugin->maturity = MATURITY_STABLE;
+    /**
+     * Get model types.
+     *
+     * @return array List of model types.
+     */
+    public function model_type(): array;
+}

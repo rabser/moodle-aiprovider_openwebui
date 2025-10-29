@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for aiprovider_openwebui.
+ * Hook listener callbacks for the Open AI provider.
  *
  * @package    aiprovider_openwebui
  * @copyright  2025 Sergio Rabellino <sergio.rabellino@unito.it>
@@ -25,7 +25,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'aiprovider_openwebui';
-$plugin->version = 2025102900;
-$plugin->requires = 2025040800;
-$plugin->maturity = MATURITY_STABLE;
+$callbacks = [
+    [
+        'hook' => \core_ai\hook\after_ai_provider_form_hook::class,
+        'callback' => \aiprovider_openwebui\hook_listener::class . '::set_form_definition_for_aiprovider_openwebui',
+    ],
+
+    [
+        'hook' => \core_ai\hook\after_ai_action_settings_form_hook::class,
+        'callback' => \aiprovider_openwebui\hook_listener::class . '::set_model_form_definition_for_aiprovider_openwebui',
+    ],
+];

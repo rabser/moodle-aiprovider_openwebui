@@ -18,40 +18,76 @@
  * Strings for component aiprovider_openwebui, language 'en'.
  *
  * @package    aiprovider_openwebui
- * @copyright  2025 Sergio Rabellino <sergio.rabellino@unito.it>
- * @this_is_derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
+ * @copyright   2025 Sergio Rabellino <sergio.rabellino@unito.it>
+ * derived from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['action:explain_text:endpoint'] = 'API endpoint';
+$string['action:explain_text:model'] = 'AI model';
+$string['action:explain_text:model_help'] = 'The model used to explain the provided text.';
+$string['action:explain_text:systeminstruction'] = 'System instruction';
+$string['action:explain_text:systeminstruction_help'] = 'This instruction is sent to the AI model along with the user\'s prompt. Editing this instruction is not recommended unless absolutely required.';
 $string['action:generate_image:endpoint'] = 'API endpoint';
 $string['action:generate_image:model'] = 'AI model';
-$string['action:generate_image:model_desc'] = 'The model used to generate images from user prompts.';
+$string['action:generate_image:model_help'] = 'The model used to generate images from user prompts.';
 $string['action:generate_text:endpoint'] = 'API endpoint';
 $string['action:generate_text:model'] = 'AI model';
-$string['action:generate_text:model_desc'] = 'The model used to generate the text response.';
+$string['action:generate_text:model_help'] = 'The model used to generate the text response.';
 $string['action:generate_text:systeminstruction'] = 'System instruction';
-$string['action:generate_text:systeminstruction_desc'] = 'This instruction is sent to the AI model along with the user\'s prompt. Editing this instruction is not recommended unless absolutely required.';
+$string['action:generate_text:systeminstruction_help'] = 'This instruction is sent to the AI model along with the user\'s prompt. Editing this instruction is not recommended unless absolutely required.';
 $string['action:summarise_text:endpoint'] = 'API endpoint';
 $string['action:summarise_text:model'] = 'AI model';
-$string['action:summarise_text:model_desc'] = 'The model used to summarise the provided text.';
+$string['action:summarise_text:model_help'] = 'The model used to summarise the provided text.';
 $string['action:summarise_text:systeminstruction'] = 'System instruction';
-$string['action:summarise_text:systeminstruction_desc'] = 'This instruction is sent to the AI model along with the user\'s prompt. Editing this instruction is not recommended unless absolutely required.';
+$string['action:summarise_text:systeminstruction_help'] = 'This instruction is sent to the AI model along with the user\'s prompt. Editing this instruction is not recommended unless absolutely required.';
 $string['apikey'] = 'OpenWebUI API key';
-$string['apikey_desc'] = 'Get a key from you OpenWebUI web interface.';
-$string['apiurl'] = 'OpenWebUI API url';
-$string['apiurl_desc'] = 'Put here the api URL of your OpenWebUI API interface. Important: NO trailing slash, please.';
+$string['apikey_help'] = 'Get a key from your OpenWebUI API keys.';
+$string['custom_model_name'] = 'Custom model name';
+$string['extraparams'] = 'Extra parameters';
+$string['extraparams_help'] = 'Extra parameters can be configured here. We support JSON format. For example:
+<pre>
+{
+    "temperature": 0.5,
+    "max_completion_tokens": 100
+}
+</pre>';
+$string['invalidjson'] = 'Invalid JSON string';
+$string['apiurl'] = 'OpenWebUI URL';
+$string['apiurl_help'] = 'Put here the url of your OpenWebUI installation';
+$string['pluginname'] = 'OpenWebUI API provider';
+$string['privacy:metadata'] = 'The OpenWebUI API provider plugin does not store any personal data.';
+$string['privacy:metadata:aiprovider_openwebui:externalpurpose'] = 'This information is sent to the OpenWebUI API in order for a response to be generated. Your OpenWebUI account settings may change how OpenWebUI stores and retains this data. No user data is explicitly sent to OpenWebUI or stored in Moodle LMS by this plugin.';
+$string['privacy:metadata:aiprovider_openwebui:model'] = 'The model used to generate the response.';
+$string['privacy:metadata:aiprovider_openwebui:numberimages'] = 'When generating images the number of images used in the response.';
+$string['privacy:metadata:aiprovider_openwebui:prompttext'] = 'The user entered text prompt used to generate the response.';
+$string['privacy:metadata:aiprovider_openwebui:responseformat'] = 'The format of the response. When generating images.';
+$string['settings'] = 'Settings';
+$string['settings_frequency_penalty'] = 'frequency_penalty';
+$string['settings_frequency_penalty_help'] = 'The frequency penalty adjusts how often words are repeated. The higher the penalty, the less repetitions in the generated text.';
+$string['settings_help'] = 'Adjust the settings below to customise how requests are sent to OpenWebUI.';
+$string['settings_max_completion_tokens'] = 'max_completion_tokens';
+$string['settings_max_completion_tokens_help'] = 'The maximum number of tokens used in the generated text.';
+$string['settings_presence_penalty'] = 'presence_penalty';
+$string['settings_presence_penalty_help'] = 'The presence penalty encourages the model to use new words by increasing the likelihood of choosing words it hasn\'t used before. A higher value makes the generated text more diverse, while a lower value allows more repetition.';
+$string['settings_top_p'] = 'top_p';
+$string['settings_top_p_help'] = 'top_p (nucleus sampling) determines how many possible words to consider. A high value (e.g. 0.9) means the model looks at more words, which makes the generated text more diverse.';
+
+// Deprecated since Moodle 5.0.
+$string['action:generate_image:model_desc'] = 'The model used to generate images from user prompts.';
+$string['action:generate_text:model_desc'] = 'The model used to generate the text response.';
+$string['action:generate_text:systeminstruction_desc'] = 'This instruction is sent to the AI model along with the user\'s prompt. Editing this instruction is not recommended unless absolutely required.';
+$string['action:summarise_text:model_desc'] = 'The model used to summarise the provided text.';
+$string['action:summarise_text:systeminstruction_desc'] = 'This instruction is sent to the AI model along with the user\'s prompt. Editing this instruction is not recommended unless absolutely required.';
+$string['apikey_desc'] = 'Get a key from OpenWebUI Platform API keys.';
 $string['enableglobalratelimit'] = 'Set site-wide rate limit';
 $string['enableglobalratelimit_desc'] = 'Limit the number of requests that the OpenWebUI API provider can receive across the entire site every hour.';
 $string['enableuserratelimit'] = 'Set user rate limit';
 $string['enableuserratelimit_desc'] = 'Limit the number of requests each user can make to the OpenWebUI API provider every hour.';
 $string['globalratelimit'] = 'Maximum number of site-wide requests';
 $string['globalratelimit_desc'] = 'The number of site-wide requests allowed per hour.';
-$string['pluginname'] = 'Provider API OpenWebUI';
-$string['privacy:metadata'] = 'The OpenWebUI API provider plugin does not store any personal data.';
-$string['privacy:metadata:aiprovider_openwebui:externalpurpose'] = 'This information is sent to the OpenWebUI API in order for a response to be generated. Your OpenWebUI account settings may change how OpenWebUI stores and retains this data. No user data is explicitly sent to OpenWebUI or stored in Moodle LMS by this plugin.';
-$string['privacy:metadata:aiprovider_openwebui:model'] = 'The model used to generate the response.';
-$string['privacy:metadata:aiprovider_openwebui:numberimages'] = 'When generating images the number of images used in the response.';
-$string['privacy:metadata:aiprovider_openwebui:prompttext'] = 'The user entered text prompt used to generate the response.';
-$string['privacy:metadata:aiprovider_openwebui:responseformat'] = 'When generating images the format of the response.';
+$string['apiurl_desc'] = 'Put here the api URL of your OpenWebUI API interface. Important: NO trailing slash, please.';
 $string['userratelimit'] = 'Maximum number of requests per user';
 $string['userratelimit_desc'] = 'The number of requests allowed per hour, per user.';
+$string['settings_max_tokens'] = 'max_tokens';
+$string['settings_max_tokens_help'] = 'The maximum number of tokens used in the generated text.';

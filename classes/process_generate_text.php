@@ -17,33 +17,22 @@
 namespace aiprovider_openwebui;
 
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
 
 /**
  * Class process text generation.
  *
  * @package    aiprovider_openwebui
  * @copyright  2025 Sergio Rabellino <sergio.rabellino@unito.it>
- * @this_is_derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
+ * derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class process_generate_text extends abstract_processor {
-    #[\Override]
-    protected function get_endpoint(): UriInterface {
-        return new Uri(get_config('aiprovider_openwebui', 'apiurl').get_config('aiprovider_openwebui', 'action_generate_text_endpoint'));
-    }
-
-    #[\Override]
-    protected function get_model(): string {
-        return get_config('aiprovider_openwebui', 'action_generate_text_model');
-    }
 
     #[\Override]
     protected function get_system_instruction(): string {
-        return get_config('aiprovider_openwebui', 'action_generate_text_systeminstruction');
+        return $this->provider->actionconfig[$this->action::class]['settings']['systeminstruction'];
     }
 
     #[\Override]
@@ -69,13 +58,19 @@ class process_generate_text extends abstract_processor {
             $requestobj->messages = [$userobj];
         }
 
+        // Append the extra model settings.
+        $modelsettings = $this->get_model_settings();
+        foreach ($modelsettings as $setting => $value) {
+            $requestobj->$setting = $value;
+        }
+
         return new Request(
             method: 'POST',
             uri: '',
-            body: json_encode($requestobj),
             headers: [
                 'Content-Type' => 'application/json',
             ],
+            body: json_encode($requestobj),
         );
     }
 
@@ -89,16 +84,17 @@ class process_generate_text extends abstract_processor {
         $responsebody = $response->getBody();
         $bodyobj = json_decode($responsebody->getContents());
 
-        // Cleanup thinking before returning text if any
-	$think_clean = preg_replace('/<think>.*?<\/think>/s', '', $bodyobj->choices[0]->message->content);
+        // Cleanup thinking before returning text if any !
+        $thinkclean = preg_replace('/<think>.*?<\/think>/s', '', $bodyobj->choices[0]->message->content);
 
         return [
             'success' => true,
             'id' => $bodyobj->id,
+            'generatedcontent' => ltrim($thinkclean),
             'finishreason' => $bodyobj->choices[0]->finish_reason,
-            'generatedcontent' => ltrim($think_clean),
             'prompttokens' => $bodyobj->usage->prompt_tokens,
             'completiontokens' => $bodyobj->usage->completion_tokens,
+            'model' => $bodyobj->model ?? $this->get_model(), // Fallback to config model.
         ];
     }
 }

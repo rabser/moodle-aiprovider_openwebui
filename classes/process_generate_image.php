@@ -19,35 +19,23 @@ namespace aiprovider_openwebui;
 use core\http_client;
 use core_ai\ai_image;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
 
 /**
  * Class process image generation.
  *
  * @package    aiprovider_openwebui
  * @copyright  2025 Sergio Rabellino <sergio.rabellino@unito.it>
- * @this_is_derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
+ * derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class process_generate_image extends abstract_processor {
-    /** @var int The number of images to generate dall-e-3 only supports 1. */
+    /** @var int The number of images to generate. */
     private int $numberimages = 1;
 
     /** @var string Response format: url or b64_json. */
     private string $responseformat = 'url';
-
-    #[\Override]
-    protected function get_endpoint(): UriInterface {
-        return new Uri(get_config('aiprovider_openwebui', 'apiurl').get_config('aiprovider_openwebui', 'action_generate_image_endpoint'));
-    }
-
-    #[\Override]
-    protected function get_model(): string {
-        return get_config('aiprovider_openwebui', 'action_generate_image_model');
-    }
 
     #[\Override]
     protected function query_ai_api(): array {
@@ -88,23 +76,28 @@ class process_generate_image extends abstract_processor {
 
     #[\Override]
     protected function create_request_object(string $userid): RequestInterface {
+        // Create the request object.
+        $requestobj = new \stdClass();
+        $requestobj->model = $this->get_model();
+        $requestobj->user = $userid;
+        $requestobj->prompt = $this->action->get_configuration('prompttext');
+        $requestobj->n = $this->numberimages;
+        $requestobj->quality = $this->action->get_configuration('quality');
+        $requestobj->response_format = $this->responseformat;
+        $requestobj->size = $this->calculate_size($this->action->get_configuration('aspectratio'));
+        $requestobj->style = $this->action->get_configuration('style');
+        // Append the extra model settings.
+        $modelsettings = $this->get_model_settings();
+        foreach ($modelsettings as $setting => $value) {
+            $requestobj->$setting = $value;
+        }
         return new Request(
             method: 'POST',
             uri: '',
-            body: json_encode((object) [
-                'prompt' => $this->action->get_configuration('prompttext'),
-                'model' => $this->get_model(),
-                'n' => $this->numberimages,
-                'quality' => $this->action->get_configuration('quality'),
-                'response_format' => $this->responseformat,
-                'size' => $this->calculate_size($this->action->get_configuration('aspectratio')),
-                'style' => $this->action->get_configuration('style'),
-                'user' => $userid,
-                'negative_prompt' => 'NSFW',
-            ]),
             headers: [
                 'Content-Type' => 'application/json',
             ],
+            body: json_encode($requestobj),
         );
     }
 
@@ -112,11 +105,11 @@ class process_generate_image extends abstract_processor {
     protected function handle_api_success(ResponseInterface $response): array {
         $responsebody = $response->getBody();
         $bodyobj = json_decode($responsebody->getContents());
-        $apiurl = get_config('aiprovider_openwebui', 'apiurl');
 
         return [
             'success' => true,
-            'sourceurl' => $apiurl.$bodyobj[0]->url,
+            'sourceurl' => $this->provider->config['apiurl'] . $bodyobj[0]->url,
+            'model' => $this->get_model(), // There is no model in the response, use config.
         ];
     }
 
@@ -134,13 +127,12 @@ class process_generate_image extends abstract_processor {
     private function url_to_file(int $userid, string $url): \stored_file {
         global $CFG;
 
-	 // Get api key from config.
-        $apikey = get_config('aiprovider_openwebui', 'apikey');
+        $apikey = $this->provider->config['apikey'];
 
         require_once("{$CFG->libdir}/filelib.php");
 
         $parsedurl = parse_url($url, PHP_URL_PATH); // Parse the URL to get the path.
-        $filename = 'ai_image_'.basename(dirname($parsedurl)); // Get the basename of the path.
+        $filename = 'ai_image_' . basename(dirname($parsedurl)); // Extract name from the path.
 
         $client = \core\di::get(http_client::class);
 
@@ -149,8 +141,8 @@ class process_generate_image extends abstract_processor {
         $client->get($url, [
             'sink' => $tempdst,
             'timeout' => $CFG->repositorygetfiletimeout,
-	    'headers' => [
-	        'Authorization' => 'Bearer '.$apikey,
+            'headers' => [
+            'Authorization' => "Bearer {$apikey}",
             ],
         ]);
 

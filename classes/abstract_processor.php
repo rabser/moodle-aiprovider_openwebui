@@ -17,9 +17,10 @@
 namespace aiprovider_openwebui;
 
 use core\http_client;
-use core_ai\aiactions\responses\response_base;
+use core_ai\form\action_settings_form;
 use core_ai\process_base;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -30,7 +31,7 @@ use Psr\Http\Message\UriInterface;
  *
  * @package    aiprovider_openwebui
  * @copyright  2025 Sergio Rabellino <sergio.rabellino@unito.it>
- * @this_is_derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
+ * derived_from  Matt Porritt <matt.porritt@moodle.com> work on openai provider
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class abstract_processor extends process_base {
@@ -39,14 +40,45 @@ abstract class abstract_processor extends process_base {
      *
      * @return UriInterface
      */
-    abstract protected function get_endpoint(): UriInterface;
+    protected function get_endpoint(): UriInterface {
+        return new Uri($this->provider->config['apiurl'] .
+                       $this->provider->actionconfig[$this->action::class]['settings']['endpoint']);
+    }
 
     /**
      * Get the name of the model to use.
      *
      * @return string
      */
-    abstract protected function get_model(): string;
+    protected function get_model(): string {
+        return $this->provider->actionconfig[$this->action::class]['settings']['model'];
+    }
+
+    /**
+     * Get the model settings.
+     *
+     * @return array
+     */
+    protected function get_model_settings(): array {
+        $settings = $this->provider->actionconfig[$this->action::class]['settings'];
+        if (!empty($settings['modelextraparams'])) {
+            // Custom model settings.
+            $params = json_decode($settings['modelextraparams'], true);
+            foreach ($params as $key => $param) {
+                $settings[$key] = $param;
+            }
+        }
+
+        // Unset unnecessary settings.
+        unset(
+            $settings['model'],
+            $settings['endpoint'],
+            $settings['systeminstruction'],
+            $settings['providerid'],
+            $settings['modelextraparams'],
+        );
+        return $settings;
+    }
 
     /**
      * Get the system instructions.
@@ -125,12 +157,10 @@ abstract class abstract_processor extends process_base {
 
         $status = $response->getStatusCode();
         if ($status >= 500 && $status < 600) {
-error_log("ERROR $status ".$response->getReasonPhrase());
             $responsearr['errormessage'] = $response->getReasonPhrase();
         } else {
             $bodyobj = json_decode($response->getBody()->getContents());
             $responsearr['errormessage'] = $bodyobj->detail;
-error_log("ERROR $status ".$bodyobj->detail);
         }
 
         return $responsearr;
