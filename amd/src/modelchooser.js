@@ -16,7 +16,8 @@
  * AI provider model selection handler.
  *
  * @module     aiprovider_openai/modelchooser
- * @copyright  2025 Huong Nguyen <huongnv13@gmail.com>
+ * @copyright  2025 Sergio Rabellino <sergio.rabellino@unito.it>
+ * derived_from  2025 Huong Nguyen <huongnv13@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
