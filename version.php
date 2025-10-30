@@ -27,5 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'aiprovider_openwebui';
 $plugin->version = 2025103000;
+$plugin->release = "1.5.1.01";
 $plugin->requires = 2025092600;
 $plugin->maturity = MATURITY_STABLE;
