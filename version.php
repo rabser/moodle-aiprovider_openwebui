@@ -29,4 +29,4 @@ $plugin->component = 'aiprovider_openwebui';
 $plugin->version = 2025102000;
 $plugin->requires = 2024100100;
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release   = '1.0.0.1';
+$plugin->release   = '1.4.5.01';
