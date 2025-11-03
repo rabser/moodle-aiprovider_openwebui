@@ -16,9 +16,16 @@
 
 namespace aiprovider_openwebui;
 
+use core\http_client;
 use core_ai\aiactions;
 use core_ai\rate_limiter;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Class provider.
@@ -145,6 +152,47 @@ class provider extends \core_ai\provider
     }
 
     /**
+     * Get models for this provider.
+     *
+     * @param string $api The api url to get models list.
+     * @return array An array of models.
+     */
+    public function get_models(
+        string $api
+    ): array {
+        $modelsrequest = new Request(
+            method: 'GET',
+            uri: $this->apiurl . $api,
+            body: '',
+            headers: [
+               'Content-Type' => 'application/json',
+               'Authorization' => "Bearer {$this->apikey}",
+            ],
+        );
+        $models = [];
+        $client = \core\di::get(http_client::class);
+        try {
+            // Call the external AI service.
+            $response = $client->send($modelsrequest, [
+                RequestOptions::HTTP_ERRORS => false,
+            ]);
+            $responsebody = $response->getBody();
+            $bodyobj = json_decode($responsebody->getContents());
+            if (isset($bodyobj->data)) {
+                // Call to AI models.
+                $models = $bodyobj->data;
+            } else {
+                // Call to AI image models.
+                $models = $bodyobj;
+            }
+        } catch (RequestException $e) {
+            // Handle any exceptions.
+            debugging("OpenWebUI ERROR getting models: " . $e->getCode() . $e->getMessage());
+        }
+        return $models;
+    }
+
+    /**
      * Get any action settings for this provider.
      *
      * @param string $action The action class name.
@@ -162,14 +210,30 @@ class provider extends \core_ai\provider
         $actionname = substr($action, (strrpos($action, '\\') + 1));
         $settings = [];
         if ($actionname === 'generate_text' || $actionname === 'summarise_text') {
-            // Add the model setting.
-            $settings[] = new \admin_setting_configtext(
-                "aiprovider_openwebui/action_{$actionname}_model",
-                new \lang_string("action:{$actionname}:model", 'aiprovider_openwebui'),
-                new \lang_string("action:{$actionname}:model_desc", 'aiprovider_openwebui'),
-                'chat-model-1',
-                PARAM_TEXT,
-            );
+            $models = $this->get_models('/api/v1/models');
+            $modelchoices = [];
+            foreach ($models as $model) {
+                $modelchoices[$model->id] = $model->name;
+            }
+            if (count($models) > 0) {
+                // Choose between models sent by OpenWebUI.
+                $settings[] = new \admin_setting_configselect(
+                    "aiprovider_openwebui/action_{$actionname}_model",
+                    new \lang_string("action:{$actionname}:model", 'aiprovider_openwebui'),
+                    new \lang_string("action:{$actionname}:model_desc", 'aiprovider_openwebui'),
+                    0,
+                    $modelchoices,
+                );
+            } else {
+                // No models sent by OpenWebUI, so ask admin to tell one.
+                $settings[] = new \admin_setting_configtext(
+                    "aiprovider_openwebui/action_{$actionname}_model",
+                    new \lang_string("action:{$actionname}:model", 'aiprovider_openwebui'),
+                    new \lang_string("action:{$actionname}:model_desc", 'aiprovider_openwebui'),
+                    'chat-model-1',
+                    PARAM_TEXT,
+                );
+            }
             // Add API endpoint.
             $settings[] = new \admin_setting_configtext(
                 "aiprovider_openwebui/action_{$actionname}_endpoint",
@@ -187,14 +251,30 @@ class provider extends \core_ai\provider
                 PARAM_TEXT
             );
         } else if ($actionname === 'generate_image') {
-            // Add the model setting.
-            $settings[] = new \admin_setting_configtext(
-                "aiprovider_openwebui/action_{$actionname}_model",
-                new \lang_string("action:{$actionname}:model", 'aiprovider_openwebui'),
-                new \lang_string("action:{$actionname}:model_desc", 'aiprovider_openwebui'),
-                'image-model-1',
-                PARAM_TEXT,
-            );
+            $models = $this->get_models('/api/v1/images/models');
+            $modelchoices = [];
+            foreach ($models as $model) {
+                $modelchoices[$model->id] = $model->name;
+            }
+            if (count($models) > 0) {
+                // Choose between models sent by OpenWebUI.
+                $settings[] = new \admin_setting_configselect(
+                    "aiprovider_openwebui/action_{$actionname}_model",
+                    new \lang_string("action:{$actionname}:model", 'aiprovider_openwebui'),
+                    new \lang_string("action:{$actionname}:model_desc", 'aiprovider_openwebui'),
+                    0,
+                    $modelchoices,
+                );
+            } else {
+                // Add the model setting.
+                $settings[] = new \admin_setting_configtext(
+                    "aiprovider_openwebui/action_{$actionname}_model",
+                    new \lang_string("action:{$actionname}:model", 'aiprovider_openwebui'),
+                    new \lang_string("action:{$actionname}:model_desc", 'aiprovider_openwebui'),
+                    'image-model-1',
+                    PARAM_TEXT,
+                );
+            }
             // Add API endpoint.
             $settings[] = new \admin_setting_configtext(
                 "aiprovider_openwebui/action_{$actionname}_endpoint",
